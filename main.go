@@ -2,70 +2,57 @@ package main
 
 import "fmt"
 
-type Usuario struct {
-	Id     int
-	Nombre string
-	Correo string
-}
-
-type Contenido struct {
-	Id     int
-	Titulo string
-	Tipo   string
-	Genero string
-}
-
-type Suscripcion struct {
-	Id        int
-	UsuarioID int
-	Plan      string
-	Estado    string
-}
-
-type Reproduccion struct {
-	UsuarioID   int
-	ContenidoID int
-	Fecha       string
-}
-
+// Función principal del sistema
+// Aquí se crean los datos de prueba y se ejecutan los módulos principales
 func main() {
-	usuarios := []Usuario{
-		{Id: 1, Nombre: "Ana López", Correo: "ana@gmail.com"},
+	usuarios := []Usuario{}
+	contenidos := []Contenido{}
+	suscripciones := []Suscripcion{}
+	reproducciones := []Reproduccion{}
+
+	// Se crean slices para almacenar usuarios, contenidos, suscripciones y reproducciones
+	usuario1, err := NuevoUsuario(1, "Ana López", "ana@gmail.com")
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
 	}
 
-	contenidos := []Contenido{
-		{Id: 1, Titulo: "La aventura digital", Tipo: "Película", Genero: "Aventura"},
+	contenido1, err := NuevoContenido(1, "La aventura digital", Categorias["P"], "Aventura")
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
 	}
 
-	suscripciones := []Suscripcion{
-		{Id: 1, UsuarioID: 1, Plan: "Premium", Estado: "Activa"},
+	suscripcion1, err := NuevaSuscripcion(1, usuario1.ObtenerID(), "Premium")
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
 	}
 
-	reproducciones := []Reproduccion{
-		{UsuarioID: 1, ContenidoID: 1, Fecha: "2026-05-23"},
+	reproduccion1, err := NuevaReproduccion(usuario1.ObtenerID(), contenido1.ObtenerID(), "2026-06-14")
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
 	}
 
-	fmt.Println("USUARIOS:")
-	for _, u := range usuarios {
-		fmt.Printf("%+v\n", u)
-	}
+	usuarios = append(usuarios, usuario1)
+	contenidos = append(contenidos, contenido1)
+	suscripciones = append(suscripciones, suscripcion1)
+	reproducciones = append(reproducciones, reproduccion1)
 
-	fmt.Println("CONTENIDO:")
-	for _, c := range contenidos {
-		fmt.Printf("%+v\n", c)
-	}
+	// Se valida cada creación mediante manejo de errores
+	fmt.Println("USUARIOS")
+	ImprimirReporte([]Reportable{usuario1})
 
-	fmt.Println("SUSCRIPCIONES:")
-	for _, s := range suscripciones {
-		fmt.Printf("%+v\n", s)
-	}
+	fmt.Println("\nCONTENIDO")
+	ImprimirReporte([]Reportable{contenido1})
 
-	fmt.Println("REPRODUCCIONES:")
-	for _, r := range reproducciones {
-		fmt.Printf("%+v\n", r)
-	}
+	fmt.Println("\nSUSCRIPCIONES")
+	ImprimirReporte([]Reportable{suscripcion1})
 
-	fmt.Println("REPORTE GENERAL:")
-	fmt.Printf("Total usuarios: %d\nTotal contenidos: %d\nTotal suscripciones: %d\nTotal reproducciones: %d\n",
-		len(usuarios), len(contenidos), len(suscripciones), len(reproducciones))
+	fmt.Println("\nREPRODUCCIONES")
+	ImprimirReporte([]Reportable{reproduccion1})
+
+	fmt.Println()
+	ReporteGeneral(usuarios, contenidos, suscripciones, reproducciones)
 }

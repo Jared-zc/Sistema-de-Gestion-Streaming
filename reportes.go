@@ -1,11 +1,25 @@
 package main
 
-// reporteGeneral returns a map with totals for provided slices.
-func reporteGeneral(usuarios, contenidos, suscripciones, reproducciones []interface{}) map[string]int {
-	return map[string]int{
-		"total_usuarios":       len(usuarios),
-		"total_contenidos":     len(contenidos),
-		"total_suscripciones":  len(suscripciones),
-		"total_reproducciones": len(reproducciones),
+import "fmt"
+
+// Reportable es una interfaz que permite mostrar información de diferentes módulos
+type Reportable interface {
+	MostrarInfo() string
+}
+
+// ImprimirReporte recibe elementos que cumplen la interfaz Reportable
+// Esto permite aplicar polimorfismo usando usuarios, contenidos, suscripciones y reproducciones
+func ImprimirReporte(items []Reportable) {
+	for _, item := range items {
+		fmt.Println(item.MostrarInfo())
 	}
+}
+
+// ReporteGeneral muestra el total de elementos registrados en cada módulo
+func ReporteGeneral(usuarios []Usuario, contenidos []Contenido, suscripciones []Suscripcion, reproducciones []Reproduccion) {
+	fmt.Println("REPORTE GENERAL")
+	fmt.Println("Total de usuarios:", len(usuarios))
+	fmt.Println("Total de contenidos:", len(contenidos))
+	fmt.Println("Total de suscripciones:", len(suscripciones))
+	fmt.Println("Total de reproducciones:", len(reproducciones))
 }
