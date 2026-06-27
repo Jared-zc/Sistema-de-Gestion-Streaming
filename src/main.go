@@ -1,16 +1,22 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
 // Función principal del sistema
-// Aquí se crean los datos de prueba y se ejecutan los módulos principales
 func main() {
+
+	// ==========================
+	// SISTEMA EN CONSOLA
+	// ==========================
+
 	usuarios := []Usuario{}
 	contenidos := []Contenido{}
 	suscripciones := []Suscripcion{}
 	reproducciones := []Reproduccion{}
 
-	// Se crean slices para almacenar usuarios, contenidos, suscripciones y reproducciones
 	usuario1, err := NuevoUsuario(1, "Ana López", "ana@gmail.com")
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -40,7 +46,6 @@ func main() {
 	suscripciones = append(suscripciones, suscripcion1)
 	reproducciones = append(reproducciones, reproduccion1)
 
-	// Se valida cada creación mediante manejo de errores
 	fmt.Println("USUARIOS")
 	ImprimirReporte([]Reportable{usuario1})
 
@@ -55,4 +60,26 @@ func main() {
 
 	fmt.Println()
 	ReporteGeneral(usuarios, contenidos, suscripciones, reproducciones)
+
+	// ==========================
+	// SERVICIOS WEB
+	// ==========================
+
+	http.HandleFunc("/usuarios", ObtenerUsuarios)
+	http.HandleFunc("/contenidos", ObtenerContenidos)
+	http.HandleFunc("/suscripciones", ObtenerSuscripciones)
+	http.HandleFunc("/reproducciones", ObtenerReproducciones)
+	http.HandleFunc("/reportes", ObtenerReporteGeneral)
+
+	// Nuevos servicios web
+	http.HandleFunc("/estado", ObtenerEstadoSistema)
+	http.HandleFunc("/planes", ObtenerPlanes)
+	http.HandleFunc("/categorias", ObtenerCategorias)
+
+	fmt.Println("\nServidor Web iniciado en http://localhost:8080")
+
+	err = http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println("Error al iniciar el servidor:", err)
+	}
 }
